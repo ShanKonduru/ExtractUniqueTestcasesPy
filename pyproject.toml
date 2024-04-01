@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "extractuniquetestcasespy"
+version = "0.1.0"
+description = "Python program that reads the \"Train_Regression_TestCases\" and \"Unique names\" sheets from an Excel workbook, extracts the unique test cases specified in the \"Unique names\" sheet, and then writes the extracted test cases to a new sheet called \"output\""
+authors = ["ShanKonduru <ShanKonduru@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2.1"
+openpyxl = "^3.1.2"
+
+[tool.poetry.group.dev.dependencies]
+openpyxl = "^3.1.2"
+pandas = "^2.2.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
