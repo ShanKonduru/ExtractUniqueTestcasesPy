@@ -4,7 +4,7 @@ def extract_test_case_details(input_file, output_file):
     # Load the input Excel workbook
     wb_in = openpyxl.load_workbook(input_file)
     ws_test_cases = wb_in['Train_Regression_TestCases']
-    ws_test_names = wb_in['UniqueTestcaseName']
+    ws_test_names = wb_in['Unique names']
 
     # Create a new Excel workbook and sheet for the output
     wb_out = openpyxl.Workbook()
@@ -34,8 +34,8 @@ def extract_test_case_details(input_file, output_file):
     wb_out.save(output_file)
 
 if __name__ == '__main__':
-    input_file = './SampleCSVFile.xlsx'
-    output_file = './output_SampleCSVFile.xlsx'
+    input_file = './Testdata/Train_Regression_Testcases.xlsx' # './SampleCSVFile.xlsx'
+    output_file = './Output/output_Train_Regression_Testcases.xlsx' # './output_SampleCSVFile.xlsx'
     
     extract_test_case_details(input_file, output_file)
     print(f"Test case details extracted and saved to {output_file}.")
