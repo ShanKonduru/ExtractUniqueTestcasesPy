@@ -16,28 +16,13 @@ def extract_test_case_details(input_file, output_file):
             seen_names.add(cell.value)
 
     # Create a dictionary to store rows associated with each test case name
-    test_case_rows = {test_name: [] for test_name in test_names_ordered}
-
-    # Initialize variables to track current test case name and its rows
-    current_test_case_name = None
-    current_test_case_rows = []
+    test_case_rows = OrderedDict()
 
     # Iterate through the "Train_Regression_TestCases" sheet to extract rows
     for row in ws_test_cases.iter_rows(min_row=2, values_only=True):
-        if row[2] in test_names_ordered:  # Check if current row has a test case name
-            # If we already collected rows for a previous test case, store them
-            if current_test_case_name is not None:
-                test_case_rows[current_test_case_name] = current_test_case_rows
-            # Start collecting rows for the new test case
-            current_test_case_name = row[2]
-            current_test_case_rows = [row]
-        else:
-            # Collect rows for the current test case until a new test case name is encountered
-            current_test_case_rows.append(row)
-
-    # Store the rows for the last test case encountered
-    if current_test_case_name is not None:
-        test_case_rows[current_test_case_name] = current_test_case_rows
+        test_case_name = row[2]
+        if test_case_name in test_names_ordered and test_case_name not in test_case_rows:
+            test_case_rows[test_case_name] = row
 
     # Create a new Excel workbook and sheet for the output
     wb_out = openpyxl.Workbook()
@@ -50,8 +35,8 @@ def extract_test_case_details(input_file, output_file):
     # Write rows to output sheet maintaining the order of test case names
     current_row = 2  # Start from row 2 as row 1 contains headers
     for test_name in test_names_ordered:
-        rows = test_case_rows[test_name]
-        for row in rows:
+        if test_name in test_case_rows:
+            row = test_case_rows[test_name]
             for col_num, value in enumerate(row, 1):
                 ws_out.cell(row=current_row, column=col_num, value=value)
             current_row += 1
