@@ -1,4 +1,5 @@
 import openpyxl
+from collections import OrderedDict
 
 def extract_test_case_details(input_file, output_file):
     # Load the input Excel workbook
@@ -7,10 +8,15 @@ def extract_test_case_details(input_file, output_file):
     ws_test_names = wb_in['Unique names']
 
     # Read unique test case names from "Unique names" sheet, skipping the first row
-    test_names = [cell.value for cell in ws_test_names['A'][1:] if cell.value]
+    test_names_ordered = []
+    seen_names = set()
+    for cell in ws_test_names['A'][1:]:
+        if cell.value and cell.value not in seen_names:
+            test_names_ordered.append(cell.value)
+            seen_names.add(cell.value)
 
     # Create a dictionary to store rows associated with each test case name
-    test_case_rows = {test_name: [] for test_name in test_names}
+    test_case_rows = {test_name: [] for test_name in test_names_ordered}
 
     # Initialize variables to track current test case name and its rows
     current_test_case_name = None
@@ -18,7 +24,7 @@ def extract_test_case_details(input_file, output_file):
 
     # Iterate through the "Train_Regression_TestCases" sheet to extract rows
     for row in ws_test_cases.iter_rows(min_row=2, values_only=True):
-        if row[2] in test_names:  # Check if current row has a test case name
+        if row[2] in test_names_ordered:  # Check if current row has a test case name
             # If we already collected rows for a previous test case, store them
             if current_test_case_name is not None:
                 test_case_rows[current_test_case_name] = current_test_case_rows
@@ -43,7 +49,7 @@ def extract_test_case_details(input_file, output_file):
 
     # Write rows to output sheet maintaining the order of test case names
     current_row = 2  # Start from row 2 as row 1 contains headers
-    for test_name in test_names:
+    for test_name in test_names_ordered:
         rows = test_case_rows[test_name]
         for row in rows:
             for col_num, value in enumerate(row, 1):

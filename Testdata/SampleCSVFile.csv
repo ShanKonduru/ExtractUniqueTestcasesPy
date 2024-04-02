@@ -24,3 +24,6 @@ Test ID,Test Name,Steps,Expected,Status
 6,Name 6,Step 1,Exp 1,Pass
 ,,Step 2,Exp 2,Fail
 ,,Step 3,Exp 3,Pass
+7,Name 1,Step 1,Exp 1,Pass
+,,Step 2,Exp 2,Fail
+,,Step 3,Exp 3,Pass
