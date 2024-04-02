@@ -1,18 +1,6 @@
 import openpyxl
 
 def get_merged_cell_dimensions(file_path, sheet_name, column_identifier):
-    """
-    Get the dimensions (number of rows and columns) of merged cells in a specified column in an Excel worksheet.
-    
-    Args:
-    - file_path (str): Path to the Excel file.
-    - sheet_name (str): Name of the worksheet.
-    - column_identifier (str or int): Column Name (e.g., 'A', 'B', 'C') or Column Number (e.g., 1, 2, 3) of the cell.
-    
-    Returns:
-    - merged_cell_dimensions_list (list): List of tuples containing the number of rows and columns in each merged cell.
-    """
-    
     # Load the Excel workbook
     wb = openpyxl.load_workbook(file_path)
     
@@ -27,11 +15,12 @@ def get_merged_cell_dimensions(file_path, sheet_name, column_identifier):
     
     # Initialize merged_cell_dimensions_list
     merged_cell_dimensions_list = []
+    visited_cells = set()
     
     # Check each row in the specified column for merged cells
     for row in range(1, ws.max_row + 1):
         cell = ws.cell(row=row, column=col_index)
-        if cell.coordinate in ws.merged_cells:
+        if cell.coordinate in ws.merged_cells and cell.coordinate not in visited_cells:
             # Get the dimensions of the merged cell
             for merged_range in ws.merged_cells.ranges:
                 if cell.coordinate in merged_range:
@@ -39,6 +28,7 @@ def get_merged_cell_dimensions(file_path, sheet_name, column_identifier):
                     num_rows = max_row - min_row + 1
                     num_columns = max_col - min_col + 1
                     merged_cell_dimensions_list.append((num_rows, num_columns))
+                    visited_cells.update(merged_range)
                     break
     
     # Close the workbook
